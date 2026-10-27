@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Services - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-services-box">
+
+        <h1>EventSphere</h1>
+        <h2>Manage Services</h2>
+        <a href="{{ url_for('vendor_add_service') }}"
+   class="vendor-logout-btn">
+    + Add New Service
+</a>
+
+<br><br>
+
+        {% if services %}
+
+        <table class="vendor-services-table">
+
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Price From</th>
+                    <th>Price To</th>
+                    <th>Availability</th>
+                    <th>Offer</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for service in services %}
+
+                <tr>
+                    <td>{{ service.service_name }}</td>
+
+                    <td>₹{{ service.price_from }}</td>
+
+                    <td>₹{{ service.price_to }}</td>
+
+                    <td>{{ service.availability_status }}</td>
+
+                    <td>{{ service.offer_text or '-' }}</td>
+
+                    <td>
+                        <a href="{{ url_for('vendor_edit_service',
+                    service_id=service.id) }}">
+    Edit
+</a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+            <p>No services available.</p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('vendor_dashboard') }}">
+            ← Back to Vendor Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

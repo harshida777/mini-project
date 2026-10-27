@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="chat-page">
+
+    <div class="chat-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>Chat with {{ vendor.vendor_name }}</h2>
+
+        <div class="chat-messages">
+
+            {% for message in messages %}
+
+                <div class="chat-message
+    {% if message.sender_type == 'customer' %}
+        sent-message
+    {% else %}
+        received-message
+    {% endif %}">
+
+    <div>{{ message.message_text }}</div>
+
+    <small>
+        {{ message.sent_at.strftime('%I:%M %p') }}
+    </small>
+
+</div>
+
+            {% else %}
+
+                <p class="no-messages">
+                    No messages yet. Start a conversation.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+        <form method="POST">
+
+            <textarea
+                name="message_text"
+                placeholder="Type your message..."
+                required></textarea>
+
+            <button type="submit">
+                Send Message
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('service_vendors',
+                            service_name=vendor.service_name) }}">
+            ← Back to Vendors
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

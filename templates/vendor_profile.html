@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vendor Profile - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+        <h2>My Profile</h2>
+
+        <div class="vendor-profile-image">
+
+            {% if vendor.profile_image %}
+
+                <img src="{{ url_for('static',
+                         filename='uploads/' + vendor.profile_image) }}"
+                     alt="Vendor Profile">
+
+            {% else %}
+
+                <div class="profile-placeholder">
+                    🏪
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="vendor-profile-title-row">
+
+    <h2>{{ vendor.business_name }}</h2>
+
+    <a href="{{ url_for('vendor_edit_profile') }}"
+       class="profile-edit-btn">
+        ✏️ Edit Profile
+    </a>
+
+</div>
+
+        <div class="vendor-profile-details">
+
+            <p>
+                <strong>Email:</strong>
+                {{ vendor.email }}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                {{ vendor.phone }}
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                {{ vendor.business_address or 'Not added yet' }}
+            </p>
+
+            <p>
+                <strong>About Business:</strong>
+                {{ vendor.about_business or 'Not added yet' }}
+            </p>
+
+            <p>
+                <strong>Account Status:</strong>
+                {{ vendor.approval_status }}
+            </p>
+
+        </div>
+        <div class="account-security-card">
+    <h3>🔐 Account Security</h3>
+
+    <p>
+        Generate or update your password recovery code.
+    </p>
+
+    <a href="{{ url_for('account_security', account_type='vendor') }}"
+       class="profile-edit-btn">
+        Generate Recovery Code
+    </a>
+</div>
+        <div class="vendor-profile-services">
+
+    <h2>My Services</h2>
+
+    {% if services %}
+
+        {% for category_name, category_services in services|groupby('service_name') %}
+
+            <a href="{{ url_for('vendor_category_services',
+                        category_name=category_name) }}"
+               class="profile-category-card">
+
+                <div>
+                    <h3>{{ category_name }}</h3>
+                    <p>View & manage {{ category_name }} services</p>
+                </div>
+
+                <span class="category-arrow">→</span>
+
+            </a>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No service categories added yet.</p>
+
+    {% endif %}
+
+</div>
+
+        <br>
+
+
+        <a href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+        <br><br>
+        <a href="{{ url_for('vendor_dashboard') }}"
+   class="vendor-logout-btn">
+    📊 Vendor Dashboard
+</a>
+
+<br><br>
+
+        <a href="{{ url_for('vendor_logout') }}"
+        class="vendor-logout-btn">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+<script>
+window.addEventListener("pageshow", function(event) {
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (
+        event.persisted ||
+        (navigation && navigation.type === "back_forward")
+    ) {
+        window.location.reload();
+    }
+});
+</script>
+
+</body>
+</html>

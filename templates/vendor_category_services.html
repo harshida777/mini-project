@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ category_name }} Services - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-services-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>{{ category_name }}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="success-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+        <p>Manage your {{ category_name }} services</p>
+
+<!-- ES_ADD_CATEGORY_SERVICE_2026 -->
+        <div class="es-actions">
+          <a class="es-button" href="{{ url_for('vendor_add_service', category=category_name) }}">+ Add {{ category_name }} Package / Service</a>
+          {% if category_name in ('Costume Rental','Ornament Rental') %}
+          <a class="es-button es-outline" href="{{ url_for('vendor_rental_shop_settings') }}">Edit Rental Shop Information</a>
+          {% endif %}
+        </div>
+        {% if services %}
+
+            {% for service in services %}
+            {# ES_CATEGORY_LISTING_FIX_2026 — show untitled legacy services #}
+
+                <div class="profile-service-card">
+
+                    <div>
+
+                        <h3>
+                            {{ service.service_title or (service.service_name ~ ' Service') }}
+                        </h3>
+
+                        {% if service.service_description %}
+                            <p>
+                                {{ service.service_description }}
+                            </p>
+                        {% endif %}
+
+                        <p>
+                            <strong>Price:</strong>
+                            ₹{{ service.price_from }} -
+                            ₹{{ service.price_to }}
+                        </p>
+
+                        <p>
+                            <strong>Availability:</strong>
+                            {{ service.availability_status }}
+                        </p>
+
+                        {% if service.offer_text %}
+                            <p>
+                                <strong>Offer:</strong>
+                                {{ service.offer_text }}
+                            </p>
+                        {% endif %}
+                        {% if category_name == 'Catering' %}
+
+    {% if service.food_type %}
+        <p>
+            <strong>Food Type:</strong>
+            {{ service.food_type }}
+        </p>
+    {% endif %}
+
+    {% if service.price_per_plate %}
+        <p>
+            <strong>Price Per Plate:</strong>
+            ₹{{ service.price_per_plate }}
+        </p>
+    {% endif %}
+
+    {% if service.minimum_guests %}
+        <p>
+            <strong>Minimum Guests:</strong>
+            {{ service.minimum_guests }}
+        </p>
+    {% endif %}
+
+    {% if service.menu_details %}
+        <div class="catering-menu-display">
+            <strong>Menu / Package Details:</strong>
+            <p>{{ service.menu_details }}</p>
+        </div>
+    {% endif %}
+
+    {% endif %}
+    {% if category_name == 'Venue' %}
+
+        {% if service.venue_type %}
+        <p>
+            <strong>Venue Type:</strong>
+            {{ service.venue_type }}
+        </p>
+        {% endif %}
+
+        {% if service.venue_capacity %}
+        <p>
+            <strong>Guest Capacity:</strong>
+            {{ service.venue_capacity }}
+        </p>
+        {% endif %}
+
+        {% if service.venue_location %}
+        <p>
+            <strong>Venue Location:</strong>
+            {{ service.venue_location }}
+        </p>
+        {% endif %}
+
+        {% if service.venue_facilities %}
+        <div class="catering-menu-display">
+            <strong>Facilities:</strong>
+            <p>{{ service.venue_facilities }}</p>
+        </div>
+        {% endif %}
+
+        {% if service.parking_available %}
+        <p>
+            <strong>Parking Available:</strong>
+            {{ service.parking_available }}
+        </p>
+        {% endif %}
+
+    {% endif %}
+    {% if category_name == 'Transportation' %}
+
+    {% if service.vehicle_type %}
+    <p>
+        <strong>Vehicle Type:</strong>
+        {{ service.vehicle_type }}
+    </p>
+    {% endif %}
+
+    {% if service.vehicle_name %}
+    <p>
+        <strong>Vehicle Name / Model:</strong>
+        {{ service.vehicle_name }}
+    </p>
+    {% endif %}
+
+    {% if service.hourly_rate %}
+    <p>
+        <strong>Hourly Rate:</strong>
+        ₹{{ service.hourly_rate }}
+    </p>
+    {% endif %}
+
+    {% if service.seating_capacity %}
+    <p>
+        <strong>Seating Capacity:</strong>
+        {{ service.seating_capacity }}
+    </p>
+    {% endif %}
+
+    {% if service.vehicle_details %}
+    <div class="catering-menu-display">
+        <strong>Vehicle Details:</strong>
+        <p>{{ service.vehicle_details }}</p>
+    </div>
+    {% endif %}
+
+{% endif %}
+
+                    </div>
+
+                    <a href="{{ url_for('vendor_edit_service',
+                                service_id=service.id) }}"
+                       class="profile-edit-btn">
+                        Edit
+                    </a>
+                    <!-- ES_SAFE_VENDOR_DELETE_BUTTON_2026 -->
+                    <form action="{{ url_for('vendor_delete_service', service_id=service.id) }}"
+                          method="post" style="display:inline-block; margin:6px 5px;"
+                          onsubmit="return confirm('Delete this service permanently? This cannot be undone.');">
+                        <button type="submit" style="background:#c62828;color:white;border:0;
+                            border-radius:5px;padding:10px 15px;cursor:pointer;font-weight:600;">
+                            Delete
+                        </button>
+                    </form>
+
+                    {% if service.service_name == 'Catering' %}
+
+    <a href="{{ url_for(
+                'vendor_catering_menu',
+                service_id=service.id
+             ) }}"
+       class="profile-edit-btn">
+        🍽 Manage Menu
+    </a>
+
+{% endif %}
+<!-- ES_PACKAGE_INVENTORY_ACTIONS_2026 -->
+                    {% if service.service_name in ('Decoration', 'Photography & Videography', 'Makeup Artist') %}
+                    <a href="{{ url_for('vendor_package_details', service_id=service.id) }}" class="profile-edit-btn">Manage Package Details</a>
+                    {% elif service.service_name in ('Costume Rental', 'Ornament Rental') %}
+                    <a href="{{ url_for('vendor_rental_inventory', service_id=service.id) }}" class="profile-edit-btn">Manage Rental Inventory</a>
+                    {% endif %}
+                    <a href="{{ url_for('vendor_service_media',
+            service_id=service.id) }}"
+   class="profile-edit-btn">
+    📷 Photos / Videos
+</a>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                No {{ category_name }} services added yet.
+            </p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('vendor_profile') }}">
+            ← Back to Profile
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

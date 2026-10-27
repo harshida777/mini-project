@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recovery Code - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="login-page">
+    <div class="login-box">
+
+        <h2>EventSphere</h2>
+
+        <h3>
+            {% if recovery_generated %}
+                Recovery Code Generated!
+            {% elif password_reset %}
+                Password Reset Successful!
+            {% else %}
+                Registration Successful!
+            {% endif %}
+        </h3>
+
+        {% if recovery_generated %}
+
+            <p>
+                Your new recovery code has been generated.
+                Please save it safely.
+            </p>
+
+        {% elif password_reset %}
+
+            <p>
+                Your password has been reset successfully.
+                Please save your new recovery code below.
+            </p>
+
+        {% else %}
+
+            <p>
+                Your {{ account_type }} account has been created.
+                Your account may require admin approval before login.
+            </p>
+
+        {% endif %}
+
+        <h3>Your Recovery Code</h3>
+
+        <div class="recovery-code-box">
+            <code>{{ recovery_code }}</code>
+        </div>
+
+        <p>
+            Please copy and save this code safely.
+            You will need it if you forget your password.
+        </p>
+
+        <p style="color:#a00035;">
+            <strong>Important:</strong>
+            This code will be displayed only once.
+            Do not share it with anyone.
+        </p>
+
+        {% if account_type == 'Vendor' %}
+            <a href="{{ url_for('vendor_login') }}">
+                Continue to Vendor Login
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}">
+                Continue to Customer Login
+            </a>
+        {% endif %}
+
+    </div>
+</div>
+
+</body>
+</html>

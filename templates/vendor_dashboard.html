@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vendor Dashboard - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>Vendor Dashboard</h2>
+
+        <div class="vendor-welcome">
+    <h3>Welcome, {{ vendor_name }}</h3>
+    <p>{{ vendor_email }}</p>
+</div>
+
+        <div class="vendor-dashboard-links">
+
+            <a href="{{ url_for('vendor_services') }}">
+    Manage Services
+</a>
+
+            <a href="{{ url_for('vendor_bookings') }}">
+    Customer Bookings
+</a>
+
+            <a href="{{ url_for('vendor_messages') }}">
+    Customer Messages
+</a>
+
+            <a href="{{ url_for('vendor_availability') }}">
+    Update Availability
+</a>
+
+        </div>
+
+        <br>
+
+        
+
+
+        <a href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+<script>
+window.addEventListener("pageshow", function(event) {
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (
+        event.persisted ||
+        (navigation && navigation.type === "back_forward")
+    ) {
+        window.location.reload();
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Catering Menu - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>{{ service.service_title }}</h2>
+
+        <h3>Catering Menu</h3>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="success-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <div class="vendor-profile-services">
+
+            <h3>Add Food Item</h3>
+
+            <form method="POST">
+
+                <label>Food Item Name</label>
+
+                <input type="text"
+                       name="item_name"
+                       placeholder="Example: Chicken Biriyani"
+                       required>
+
+
+                <label>Category</label>
+
+                <select name="item_category">
+
+                    <option value="">Select Category</option>
+
+                    <option value="Welcome Drink">
+                        Welcome Drink
+                    </option>
+
+                    <option value="Starter">
+                        Starter
+                    </option>
+
+                    <option value="Main Course">
+                        Main Course
+                    </option>
+
+                    <option value="Side Dish">
+                        Side Dish
+                    </option>
+
+                    <option value="Dessert">
+                        Dessert
+                    </option>
+
+                    <option value="Beverage">
+                        Beverage
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <label>Price Per Person</label>
+
+                <input type="number"
+                       name="price_per_person"
+                       min="0"
+                       step="0.01"
+                       placeholder="Example: 180"
+                       required>
+
+
+                <button type="submit">
+                    + Add Food Item
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="vendor-profile-services">
+
+            <h2>Food Items</h2>
+
+            {% if menu_items %}
+
+                {% for item in menu_items %}
+
+                    <div class="profile-service-card">
+
+                        <div>
+
+                            <h3>
+                                {{ item.item_name }}
+                            </h3>
+
+                            {% if item.item_category %}
+                                <p>
+                                    <strong>Category:</strong>
+                                    {{ item.item_category }}
+                                </p>
+                            {% endif %}
+
+                            <p>
+                                <strong>Price:</strong>
+                                ₹{{ item.price_per_person }}
+                                / person
+                            </p>
+
+                        </div>
+
+
+                        <form method="POST"
+                              action="{{ url_for(
+                                  'vendor_delete_catering_item',
+                                  item_id=item.id
+                              ) }}"
+                              onsubmit="return confirm('Remove this food item?');">
+
+                            <button type="submit"
+                                    class="profile-edit-btn">
+                                Remove
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No food items added yet.</p>
+
+            {% endif %}
+
+        </div>
+
+
+        <br>
+
+        <a href="{{ url_for(
+                    'vendor_category_services',
+                    category_name='Catering'
+                 ) }}">
+            ← Back to Catering Services
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

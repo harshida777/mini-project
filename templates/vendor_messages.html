@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Messages - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-bookings-box">
+
+        <h1>EventSphere</h1>
+        <h2>Customer Messages</h2>
+
+        {% if conversations %}
+
+            <table class="booking-table">
+
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Last Message</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for conversation in conversations %}
+
+                    <tr>
+
+                        <td>{{ conversation.full_name }}</td>
+
+                        <td>{{ conversation.email }}</td>
+
+                        <td>
+                            {{ conversation.last_message }}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for(
+                                'vendor_chat',
+                                customer_id=conversation.customer_id
+                            ) }}">
+                                Open Chat
+                            </a>
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <p>No customer messages available.</p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('vendor_dashboard') }}">
+            ← Back to Vendor Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

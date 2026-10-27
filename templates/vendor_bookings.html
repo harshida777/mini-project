@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Bookings - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-bookings-box">
+
+        <h1>EventSphere</h1>
+        <h2>Customer Bookings</h2>
+
+        {% if bookings %}
+
+            <table class="booking-table">
+
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for booking in bookings %}
+
+                    <tr>
+                        <td>{{ booking.full_name }}</td>
+                        <td>{{ booking.service_name }}</td>
+                        <td>
+    {{ booking.booking_date }}
+
+    {% if booking.service_name == 'Catering'
+          and booking.guest_count %}
+
+        <br><br>
+
+        <strong>Guests:</strong>
+        {{ booking.guest_count }}
+
+        <br>
+
+        <strong>Price Per Person:</strong>
+        ₹{{ "%.2f"|format(booking.price_per_person) }}
+
+        {% if booking.catering_items %}
+
+            <br><br>
+
+            <strong>Selected Menu:</strong>
+
+            <ul>
+                {% for item in booking.catering_items %}
+                    <li>
+                        {{ item.item_name }}
+                        - ₹{{ "%.2f"|format(item.price_per_person) }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% endif %}
+
+    {% endif %}
+
+    {% if booking.service_name == 'Transportation' %}
+
+<div class="transport-booking-details">
+
+    {% if booking.vehicle_name %}
+    <p>
+        <strong>Vehicle:</strong>
+        {{ booking.vehicle_name }}
+    </p>
+    {% endif %}
+
+    {% if booking.hourly_rate is not none %}
+    <p>
+        <strong>Hourly Rate:</strong>
+        ₹{{ booking.hourly_rate }}
+    </p>
+    {% endif %}
+
+    {% if booking.rental_hours %}
+    <p>
+        <strong>Rental Hours:</strong>
+        {{ booking.rental_hours }}
+    </p>
+    {% endif %}
+
+</div>
+
+{% endif %}
+</td>
+                        <td>₹{{ booking.amount }}</td>
+                        <td>
+                        <span class="booking-status booking-status-{{ booking.status|lower }}">
+                            {{ booking.status }}
+                        </span>
+                    </td>
+                        <td>
+
+    {% if booking.status == 'Pending' %}
+
+        <a href="{{ url_for('update_booking_status',
+            booking_id=booking.id,
+            status='Accepted') }}"
+           class="booking-accept-btn">
+            Accept
+        </a>
+
+    
+
+        <a href="{{ url_for('update_booking_status',
+            booking_id=booking.id,
+            status='Rejected') }}"
+           class="booking-reject-btn">
+            Reject
+        </a>
+
+    {% else %}
+
+    —
+
+{% endif %}
+
+</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <p>No customer bookings available.</p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('vendor_dashboard') }}">
+            ← Back to Vendor Dashboard
+        </a>
+
+    </div>
+
+</div>
+<script>
+window.addEventListener("pageshow", function(event) {
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (
+        event.persisted ||
+        (navigation && navigation.type === "back_forward")
+    ) {
+        window.location.reload();
+    }
+});
+</script>
+
+</body>
+</html>

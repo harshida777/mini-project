@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rental Shop Settings - EventSphere</title><link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}"></head><body>
+<main class="es-flow"><div class="es-shell"><a class="es-back" href="{{url_for('vendor_profile')}}">← Back to Vendor Profile</a><header><span class="es-kicker">RENTAL SHOP PROFILE</span><h1>Shop Information</h1><p>For Costume Rental and Ornament Rental. Customers visit the shop to choose items — direct online booking is disabled.</p></header>
+{% with msgs=get_flashed_messages(with_categories=true) %}{% for typ,msg in msgs %}<div class="es-alert">{{msg}}</div>{% endfor %}{% endwith %}{% if error %}<div class="es-error">{{error}}</div>{% endif %}
+<form class="es-form" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token}}">
+<div class="es-form-grid"><label>Established On<input type="date" name="established_on" value="{{info.established_on or ''}}"></label>
+<label>Opening Time<input type="time" name="opening_time" value="{{info.opening_time or ''}}"></label>
+<label>Closing Time<input type="time" name="closing_time" value="{{info.closing_time or ''}}"></label>
+<label>Weekly Off Days<input type="text" name="closed_days" maxlength="150" placeholder="e.g. Sunday" value="{{info.closed_days or ''}}"></label></div>
+<label>Exact Shop Location / Map Search Text<input name="location_text" maxlength="255" placeholder="Full address with street, town, postcode" value="{{info.location_text or ''}}"></label>
+<label>Shop Bio<textarea rows="5" name="shop_bio" maxlength="15000" placeholder="Shop experience, collection, services...">{{info.shop_bio or ''}}</textarea></label>
+<button class="es-button" type="submit">Save Shop Details</button></form>
+<p class="es-note">Shop licence is the uploaded vendor registration certificate. Shop photo galleries can be added under each rental service's <b>Photos / Videos</b>. Your shop profile image and phone are edited from Vendor Profile.</p>
+</div></main></body></html>

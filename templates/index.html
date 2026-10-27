@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            EventSphere
+        </div>
+
+        <div class="nav-links">
+
+    <a href="/">Home</a>
+    <a href="#services">Services</a>
+    <a href="#featured-vendors">Vendors</a>
+
+    
+
+    {% if session.get('vendor_id') %}
+
+    <span class="user-name">
+        Hi, {{ session.get('vendor_name') }}
+    </span>
+
+    <a href="{{ url_for('vendor_profile') }}" class="nav-profile-link">
+
+        {% if vendor_nav_profile and vendor_nav_profile.profile_image %}
+
+            <img src="{{ url_for('static',
+                     filename='uploads/' + vendor_nav_profile.profile_image) }}"
+                 class="nav-profile-image"
+                 alt="Profile">
+
+        {% else %}
+
+            <div class="nav-profile-placeholder">
+                👤
+            </div>
+
+        {% endif %}
+
+    </a>
+
+{% elif session.get('user_id') %}
+
+    <span class="user-name">
+    Hi, {{ session.get('user_name') }}
+</span>
+
+<a href="{{ url_for('customer_profile') }}"
+   class="nav-profile-link">
+
+    {% if customer_nav_profile
+          and customer_nav_profile.profile_image %}
+
+        <img src="{{ url_for(
+                    'static',
+                    filename='uploads/' + customer_nav_profile.profile_image
+                ) }}"
+             class="nav-profile-image"
+             alt="Profile">
+
+    {% else %}
+
+        <div class="nav-profile-placeholder">
+            👤
+        </div>
+
+    {% endif %}
+
+</a>
+
+{% else %}
+
+    <a href="{{ url_for('login_options') }}" class="nav-login-btn">
+        Login
+    </a>
+
+{% endif %}
+
+</div>
+
+    </nav>
+
+
+    
+   <!-- Hero Section -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            Plan Your<br>
+            <span>Perfect Event</span>
+        </h1>
+
+        <p>
+            Find, compare, and book the best event services
+            from trusted vendors - all in one place.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#services" class="btn">
+                Explore Services
+            </a>
+
+            <a href="#" class="btn-outline">
+                Get Started
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="hero-image">
+
+        <img src="{{ url_for('static', filename='images/hero-event.jpg') }}"
+             alt="Event Planning">
+
+    </div>
+
+</section>
+
+<!-- Search Section -->
+<section class="search-section">
+
+    <div class="search-box">
+
+        <div class="search-item">
+            <label>Event Type</label>
+           <select name="event_type">
+    <option value="">Select Event Type</option>
+
+    {% for event in event_types %}
+        <option value="{{ event.event_name }}">
+            {{ event.event_name }}
+        </option>
+    {% endfor %}
+</select>
+        </div>
+
+        <div class="search-item">
+            <label>Location</label>
+            <select>
+                <option>Select Location</option>
+                <option>Malappuram</option>
+                <option>Kozhikode</option>
+                <option>Kochi</option>
+                <option>Thrissur</option>
+            </select>
+        </div>
+
+        <div class="search-item">
+            <label>Budget</label>
+            <select>
+                <option>Select Budget</option>
+                <option>Below ₹25,000</option>
+                <option>₹25,000 - ₹50,000</option>
+                <option>₹50,000 - ₹1,00,000</option>
+                <option>Above ₹1,00,000</option>
+            </select>
+        </div>
+
+        <div class="search-item">
+            <label>Date</label>
+            <input type="date">
+        </div>
+
+        <button class="search-btn">Search</button>
+
+    </div>
+
+</section>
+    <!-- Services -->
+    <section class="services" id="services">
+
+    <h2>Popular Services</h2>
+
+    <div class="service-container">
+
+    
+    {% set service_icons = {
+    'Venue': '🏛️',
+    'Catering': '🍽️',
+    'Decoration': '🌸',
+    'Photography & Videography': '📷',
+    'Makeup Artist': '💄',
+    'Costume Rental': '👗',
+    'Ornament Rental': '💍',
+    'Transportation': '🚗'
+    } %}    
+{% for service in service_categories %}
+
+        <a href="{{ url_for('service_vendors', service_name=service.service_name) }}"
+   class="service-link">
+
+    <div class="service-card">
+
+        <div class="service-icon">
+            {{ service_icons.get(service.service_name, '🎉') }}
+        </div>
+
+        <h3>{{ service.service_name }}</h3>
+
+    </div>
+
+</a>
+
+    {% endfor %}
+
+</div>
+
+</section>
+
+<!-- Featured Vendors -->
+<section id="featured-vendors" class="featured-vendors">
+
+    <h2>Featured Vendors</h2>
+
+    <div class="vendor-container">
+
+        <div class="vendor-card">
+            <img src="{{ url_for('static', filename='images/venue.jpg') }}" alt="Venue">
+
+            <div class="vendor-info">
+                <h3>Grand Celebration Palace</h3>
+                <p>Venue</p>
+                <p>⭐ 4.8</p>
+                <h4>₹50,000 - ₹5,00,000</h4>
+                <a href="/service/Venue" class="vendor-btn">View Details</a>
+                <a href="/book?service=Venue&vendor=Grand Celebration Palace"
+   class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+
+        <div class="vendor-card">
+            <img src="{{ url_for('static', filename='images/catering.jpg') }}" alt="Catering">
+
+            <div class="vendor-info">
+                <h3>TasteCraft Catering</h3>
+                <p>Catering</p>
+                <p>⭐ 4.7</p>
+                <h4>₹500 - ₹2,000 / plate</h4>
+                <a href="/service/Catering" class="vendor-btn">View Details</a>
+                <a href="/book?service=Catering&vendor=TasteCraft Catering"
+   class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+
+        <div class="vendor-card">
+            <img src="{{ url_for('static', filename='images/photography.jpg') }}" alt="Photography">
+
+            <div class="vendor-info">
+                <h3>Pixel Perfect Studios</h3>
+                <p>Photography & Videography</p>
+                <p>⭐ 4.9</p>
+                <h4>₹15,000 - ₹1,50,000</h4>
+                <a href="/service/Photography" class="vendor-btn">View Details</a>
+                <a href="/book?service=Photography&vendor=Pixel Perfect Studios"
+   class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+</section>   <!-- Featured Vendors ends -->
+
+
+<!-- How It Works -->
+<section class="how-it-works">
+
+    <h2>How It Works</h2>
+
+    <div class="steps-container">
+
+        <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-icon">📅</div>
+            <h3>Create Event</h3>
+            <p>Tell us about your event and requirements.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-icon">👥</div>
+            <h3>Find Vendors</h3>
+            <p>Explore vendors that match your needs.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-icon">⚖️</div>
+            <h3>Compare</h3>
+            <p>Compare prices, reviews and services.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-icon">✅</div>
+            <h3>Book Service</h3>
+            <p>Choose the best service and book easily.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            © 2026 EventSphere - Smart Event Planning and Service Marketplace
+        </p>
+
+    </footer>
+    <script>
+window.addEventListener("pageshow", function(event) {
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (
+        event.persisted ||
+        (navigation && navigation.type === "back_forward")
+    ) {
+        window.location.reload();
+    }
+});
+</script>
+
+</body>
+
+</html>

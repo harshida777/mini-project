@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{{ vendor.business_name }} - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+
+        <div class="vendor-profile-image">
+
+            {% if vendor.profile_image %}
+
+                <img src="{{ url_for(
+                            'static',
+                            filename='uploads/' + vendor.profile_image
+                        ) }}"
+                     alt="{{ vendor.business_name }}">
+
+            {% else %}
+
+                <div class="profile-placeholder">
+                    🏪
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <h2>{{ vendor.business_name }}</h2>
+
+        <div class="vendor-profile-details">
+
+            <p>
+                <strong>About Business:</strong>
+                {{ vendor.about_business or 'Not added yet' }}
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                {{ vendor.business_address or 'Not added yet' }}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                {{ vendor.phone }}
+            </p>
+
+        </div>
+
+        <div class="vendor-profile-services">
+
+            <h2>Services</h2>
+
+            {% if services %}
+
+                {% for service in services %}
+
+                    <div class="profile-service-card">
+
+                        <div>
+
+                            <h3>
+                                {{ service.service_title }}
+                            </h3>
+
+                            <p>
+                                <strong>Category:</strong>
+                                {{ service.service_name }}
+                            </p>
+
+                            {% if service.service_description %}
+
+                                <p>
+                                    {{ service.service_description }}
+                                </p>
+
+                            {% endif %}
+                            {% if service.service_name == 'Venue' %}
+
+    {% if service.venue_type %}
+    <p>
+        <strong>Venue Type:</strong>
+        {{ service.venue_type }}
+    </p>
+    {% endif %}
+
+    {% if service.venue_capacity %}
+    <p>
+        <strong>Guest Capacity:</strong>
+        {{ service.venue_capacity }}
+    </p>
+    {% endif %}
+
+    {% if service.venue_location %}
+    <p>
+        <strong>Venue Location:</strong>
+        {{ service.venue_location }}
+    </p>
+    {% endif %}
+
+    {% if service.venue_facilities %}
+    <div class="catering-menu-display">
+        <strong>Facilities:</strong>
+        <p>{{ service.venue_facilities }}</p>
+    </div>
+    {% endif %}
+
+    {% if service.parking_available %}
+    <p>
+        <strong>Parking Available:</strong>
+        {{ service.parking_available }}
+    </p>
+    {% endif %}
+
+{% endif %}
+{% if service.service_name == 'Transportation' %}
+
+    {% if service.vehicle_type %}
+    <p>
+        <strong>Vehicle Type:</strong>
+        {{ service.vehicle_type }}
+    </p>
+    {% endif %}
+
+    {% if service.vehicle_name %}
+    <p>
+        <strong>Vehicle Name / Model:</strong>
+        {{ service.vehicle_name }}
+    </p>
+    {% endif %}
+
+    {% if service.hourly_rate %}
+    <p>
+        <strong>Hourly Rate:</strong>
+        ₹{{ service.hourly_rate }}
+    </p>
+    {% endif %}
+
+    {% if service.seating_capacity %}
+    <p>
+        <strong>Seating Capacity:</strong>
+        {{ service.seating_capacity }}
+    </p>
+    {% endif %}
+
+    {% if service.vehicle_details %}
+    <div class="catering-menu-display">
+        <strong>Vehicle Details:</strong>
+        <p>{{ service.vehicle_details }}</p>
+    </div>
+    {% endif %}
+
+{% endif %}
+                            {% if service.media %}
+
+            <div class="service-media-grid">
+
+                {% for item in service.media %}
+
+                    <div class="service-media-item">
+
+                        {% if item.media_type == 'image' %}
+
+                            <img src="{{ url_for(
+                                        'static',
+                                        filename='uploads/service_media/' + item.file_name
+                                    ) }}"
+                                alt="{{ service.service_title }}">
+
+                        {% elif item.media_type == 'video' %}
+
+                            <video controls>
+                                <source src="{{ url_for(
+                                                'static',
+                                                filename='uploads/service_media/' + item.file_name
+                                            ) }}">
+                            </video>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+                            <p>
+                                <strong>Price:</strong>
+                                ₹{{ service.price_from }}
+                                -
+                                ₹{{ service.price_to }}
+                            </p>
+
+                            <p>
+                                <strong>Availability:</strong>
+                                {{ service.availability_status }}
+                            </p>
+
+                            {% if service.offer_text %}
+
+                                <p>
+                                    <strong>Offer:</strong>
+                                    {{ service.offer_text }}
+                                </p>
+
+                            {% endif %}
+                            {% if service.service_name == 'Catering' %}
+
+                            {% if service.food_type %}
+                                <p>
+                                    <strong>Food Type:</strong>
+                                    {{ service.food_type }}
+                                </p>
+                            {% endif %}
+
+                            {% if service.price_per_plate %}
+                                <p>
+                                    <strong>Price Per Plate:</strong>
+                                    ₹{{ service.price_per_plate }}
+                                </p>
+                            {% endif %}
+
+                            {% if service.minimum_guests %}
+                                <p>
+                                    <strong>Minimum Guests:</strong>
+                                    {{ service.minimum_guests }}
+                                </p>
+                            {% endif %}
+
+                            {% if service.menu_details %}
+                                <div class="catering-menu-display">
+                                    <strong>Menu / Package Details:</strong>
+                                    <p>{{ service.menu_details }}</p>
+                                </div>
+                            {% endif %}
+
+                        {% endif %}  
+{% if service.service_name == 'Catering' %}
+
+    <a href="{{ url_for(
+                'customer_catering_menu',
+                service_id=service.id
+             ) }}"
+       class="vendor-logout-btn">
+        🍽 View Menu
+    </a>
+
+{% endif %}
+
+
+                            <div class="public-profile-actions">
+
+
+                                <a href="tel:+91{{ service.phone }}"
+                                   class="vendor-logout-btn">
+                                    📞 Call
+                                </a>
+
+                                <a href="{{ url_for(
+                                            'chat',
+                                            vendor_id=service.id
+                                        ) }}"
+                                   class="vendor-logout-btn">
+                                    💬 Message
+                                </a>
+
+                                {% if service.availability_status == 'Available' %}
+
+                                    <a href="{{ url_for(
+                                                'book',
+                                                vendor_id=service.id
+                                            ) }}"
+                                       class="vendor-logout-btn">
+                                        Book Now
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No services available.</p>
+
+            {% endif %}
+
+        </div>
+        <!-- Customer Reviews -->
+
+<div class="vendor-reviews-section">
+
+    <h2>Customer Reviews</h2>
+
+    {% if review_summary and review_summary.review_count > 0 %}
+
+        <div class="review-summary">
+
+            <strong>
+                ⭐ {{ review_summary.average_rating }} / 5
+            </strong>
+
+            <span>
+                ({{ review_summary.review_count }} Reviews)
+            </span>
+
+        </div>
+
+        {% for review in reviews %}
+
+            <div class="public-review-card">
+
+                <h3>{{ review.full_name }}</h3>
+
+                <p class="public-review-rating">
+                    ⭐ {{ review.rating }} / 5
+                </p>
+
+                {% if review.service_title %}
+                    <p>
+                        <strong>Service:</strong>
+                        {{ review.service_title }}
+                    </p>
+                {% elif review.service_name %}
+                    <p>
+                        <strong>Service:</strong>
+                        {{ review.service_name }}
+                    </p>
+                {% endif %}
+
+                <p>
+                    {{ review.review_text }}
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No customer reviews yet.</p>
+
+    {% endif %}
+
+</div>
+
+        <br>
+
+        <a href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

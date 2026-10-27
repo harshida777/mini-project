@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Service Media - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>
+            {{ service.service_title or service.service_name }}
+        </h2>
+
+        <p>
+            Upload photos and videos for this service.
+        </p>
+
+        {% if error %}
+            <div class="unavailable-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="add-service-form">
+
+            <label>Photos / Videos</label>
+
+            <input type="file"
+                   name="media_files"
+                   accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.webm"
+                   multiple
+                   required>
+
+            <small>
+                You can select multiple photos or videos.
+            </small>
+
+            <br><br>
+
+            <button type="submit">
+                Upload Media
+            </button>
+
+        </form>
+
+
+        <div class="vendor-profile-services">
+
+            <h2>Uploaded Media</h2>
+
+            {% if media %}
+
+                <div class="service-media-grid">
+
+                    {% for item in media %}
+
+                        <div class="service-media-item">
+
+                            {% if item.media_type == 'image' %}
+
+                                <img src="{{ url_for(
+                                            'static',
+                                            filename='uploads/service_media/' + item.file_name
+                                        ) }}"
+                                     alt="Service Photo">
+
+                            {% elif item.media_type == 'video' %}
+
+                                <video controls>
+                                    <source src="{{ url_for(
+                                                    'static',
+                                                    filename='uploads/service_media/' + item.file_name
+                                                ) }}">
+                                </video>
+
+                            {% endif %}
+
+                            <form method="POST"
+                                action="{{ url_for('vendor_delete_service_media',
+                                                    media_id=item.id) }}"
+                                onsubmit="return confirm('Delete this photo/video?');">
+
+                                <button type="submit"
+                                        class="media-delete-btn">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p>No photos or videos uploaded yet.</p>
+
+            {% endif %}
+
+        </div>
+
+        <br>
+
+        <a href="{{ url_for(
+                    'vendor_category_services',
+                    category_name=service.service_name
+                ) }}">
+            ← Back to Service
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

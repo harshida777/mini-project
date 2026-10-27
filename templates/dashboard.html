@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="dashboard-page">
+
+        <div class="dashboard-box">
+
+            <h1>EventSphere</h1>
+
+            <h2>Welcome, {{ session.get('user_name') }}</h2>
+
+            <p>
+                Email: {{ session.get('user_email') }}
+            </p>
+
+            <a href="/" class="dashboard-btn">
+                Back to Home
+            </a>
+
+            <a href="/logout" class="dashboard-logout">
+                Logout
+            </a>
+
+        </div>
+        <div class="bookings-box">
+
+    <h2>My Bookings</h2>
+
+    {% if bookings %}
+
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Vendor</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.service_name }}</td>
+                    <td>{{ booking.vendor_name }}</td>
+                    <td>{{ booking.booking_date }}</td>
+                    <td>{{ booking.amount }}</td>
+                    <td>{{ booking.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+
+        <p class="no-bookings">No bookings yet.</p>
+
+    {% endif %}
+
+</div>
+
+
+    </div>
+
+</body>
+</html>

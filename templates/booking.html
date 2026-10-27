@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book Service - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box">
+
+        <h1>EventSphere</h1>
+        <h2>Book a Service</h2>
+
+        <p class="login-text">
+            Enter your booking details.
+        </p>
+        {% if error %}
+    <p class="error-message">{{ error }}</p>
+{% endif %}
+
+        <form method="POST" action="/book">
+            <input type="hidden"
+                    name="service_id"
+                    value="{{ service_id }}">
+
+
+            <div class="form-group">
+                <label>Service</label>
+
+                <select name="service_name" required>
+
+    <option value="">Select Service</option>
+
+    <option value="Venue"
+        {% if selected_service == 'Venue' %}selected{% endif %}>
+        Venue
+    </option>
+
+    <option value="Catering"
+        {% if selected_service == 'Catering' %}selected{% endif %}>
+        Catering
+    </option>
+
+    <option value="Photography & Videography"
+    {% if selected_service == 'Photography & Videography' %}selected{% endif %}>
+    Photography & Videography
+</option>
+
+    <option value="Decoration"
+        {% if selected_service == 'Decoration' %}selected{% endif %}>
+        Decoration
+    </option>
+    <option value="Makeup Artist"
+    {% if selected_service == 'Makeup Artist' %}selected{% endif %}>
+    Makeup Artist
+</option>
+
+<option value="Costume Rental"
+    {% if selected_service == 'Costume Rental' %}selected{% endif %}>
+    Costume Rental
+</option>
+
+<option value="Ornament Rental"
+    {% if selected_service == 'Ornament Rental' %}selected{% endif %}>
+    Ornament Rental
+</option>
+
+
+    <option value="Transportation"
+    {% if selected_service == 'Transportation' %}selected{% endif %}>
+    Transportation
+</option>
+
+</select>
+            </div>
+
+            <div class="form-group">
+                <label>Vendor Name</label>
+
+                <input type="text"
+       name="vendor_name"
+       value="{{ selected_vendor }}"
+       placeholder="Enter vendor name"
+       required>
+            </div>
+            {% if vendor_details %}
+<div class="vendor-summary">
+
+    <p>
+        <strong>Price Range:</strong>
+        ₹{{ vendor_details.price_from }} - ₹{{ vendor_details.price_to }}
+    </p>
+
+    <p>
+        <strong>Rating:</strong>
+        ⭐ {{ vendor_details.rating }}
+    </p>
+
+    <p>
+        <strong>Availability:</strong>
+        {{ vendor_details.availability_status }}
+    </p>
+
+</div>
+{% endif %}
+
+            <div class="form-group">
+                <label>Booking Date</label>
+
+                <input type="date"
+                       name="booking_date"
+                       min="{{ today }}"
+                       required>
+            </div>
+            {% if selected_service == 'Transportation' and vendor_details %}
+
+<div class="form-group">
+    <label>Vehicle</label>
+    <input type="text"
+           value="{{ vendor_details.vehicle_name or vendor_details.vehicle_type }}"
+           readonly>
+</div>
+
+<div class="form-group">
+    <label>Hourly Rate</label>
+    <input type="number"
+           id="hourly_rate"
+           value="{{ vendor_details.hourly_rate }}"
+           readonly>
+</div>
+
+<div class="form-group">
+    <label>Rental Hours</label>
+    <input type="number"
+           id="rental_hours"
+           name="rental_hours"
+           min="1"
+           placeholder="Enter rental hours"
+           oninput="calculateTransportTotal()"
+           required>
+</div>
+
+{% endif %}
+
+            <div class="form-group">
+                <label>Amount</label>
+
+                <input type="number"
+                id="amount"
+                name="amount"
+                placeholder="Enter amount"
+                step="0.01"
+
+       {% if vendor_details %}
+           min="{{ vendor_details.price_from }}"
+           max="{{ vendor_details.price_to }}"
+       {% else %}
+           min="0"
+       {% endif %}
+
+       required>
+            </div>
+
+            <button type="submit" class="login-btn">
+                Confirm Booking
+            </button>
+
+        </form>
+
+        <a href="/" class="back-home">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+<script>
+function calculateTransportTotal() {
+    const hourlyRate = parseFloat(document.getElementById('hourly_rate')?.value || 0);
+    const rentalHours = parseFloat(document.getElementById('rental_hours')?.value || 0);
+    const amountField = document.getElementById('amount');
+
+    if (amountField && hourlyRate > 0 && rentalHours > 0) {
+        amountField.value = (hourlyRate * rentalHours).toFixed(2);
+    }
+}
+</script>
+
+</body>
+</html>

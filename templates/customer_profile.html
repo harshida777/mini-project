@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+        <h2>My Profile</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        {% for category, message in messages %}
+
+            <div class="success-message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endwith %}
+
+        <div class="vendor-profile-image">
+
+            {% if user.profile_image %}
+
+                <img src="{{ url_for(
+                            'static',
+                            filename='uploads/' + user.profile_image
+                        ) }}"
+                     alt="Profile">
+
+            {% else %}
+
+                <div class="profile-placeholder">
+                    👤
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="vendor-profile-title-row">
+
+    <h2>
+        {{ user.full_name }}
+    </h2>
+
+    <a href="{{ url_for('customer_edit_profile') }}"
+       class="profile-edit-btn">
+        ✏️ Edit Profile
+    </a>
+
+</div>
+
+        <div class="vendor-profile-details">
+
+            <p>
+                <strong>Email:</strong>
+                {{ user.email }}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                {{ user.phone }}
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                {{ user.address or 'Not added yet' }}
+            </p>
+
+            <p>
+                <strong>Member Since:</strong>
+                {{ user.created_at }}
+            </p>
+
+        </div>
+        <div class="vendor-profile-services">
+            <div class="account-security-card">
+    <h3>🔐 Account Security</h3>
+
+    <p>
+        Generate or update your password recovery code.
+    </p>
+
+    <a href="{{ url_for('account_security', account_type='customer') }}"
+       class="profile-edit-btn">
+        Generate Recovery Code
+    </a>
+</div>
+
+    <h2>My Bookings</h2>
+
+    {% if bookings %}
+
+        {% for booking in bookings %}
+
+            <div class="profile-service-card">
+
+                <div>
+
+                    <h3>{{ booking.service_name }}</h3>
+
+                    <p>
+                        <strong>Vendor:</strong>
+                        {{ booking.vendor_name }}
+                    </p>
+
+                    <p>
+                        <strong>Event Date:</strong>
+                        {{ booking.booking_date }}
+                    </p>
+                    {% if booking.service_name == 'Catering'
+      and booking.guest_count %}
+
+    <p>
+        <strong>Guests:</strong>
+        {{ booking.guest_count }}
+    </p>
+
+    <p>
+        <strong>Price Per Person:</strong>
+        ₹{{ "%.2f"|format(booking.price_per_person) }}
+    </p>
+
+    {% if booking.catering_items %}
+
+        <p>
+            <strong>Selected Menu:</strong>
+        </p>
+
+        <ul>
+            {% for item in booking.catering_items %}
+                <li>
+                    {{ item.item_name }}
+                    - ₹{{ "%.2f"|format(item.price_per_person) }}
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
+{% endif %}
+
+
+                    {% if booking.amount is not none %}
+                        <p>
+                            <strong>Amount:</strong>
+                            ₹{{ booking.amount }}
+                        </p>
+                    {% endif %}
+              {% if booking.service_name == 'Transportation' and booking.rental_hours %}
+    <p>
+        <strong>Rental Hours:</strong>
+        {{ booking.rental_hours }}
+    </p>
+    {% endif %}
+    {% if booking.service_name == 'Transportation' %}
+
+    {% if booking.vehicle_name %}
+    <p>
+        <strong>Vehicle Name:</strong>
+        {{ booking.vehicle_name }}
+    </p>
+    {% endif %}
+
+    {% if booking.hourly_rate is not none %}
+    <p>
+        <strong>Hourly Rate:</strong>
+        ₹{{ booking.hourly_rate }}
+    </p>
+    {% endif %}
+
+{% endif %}
+
+                    <p>
+    <strong>Status:</strong>
+
+    <span class="booking-status booking-status-{{ booking.status|lower }}">
+        {{ booking.status }}
+    </span>
+</p>
+
+{% if booking.status == 'Pending' %}
+
+    <form method="POST"
+          action="{{ url_for('customer_cancel_booking',
+                             booking_id=booking.id) }}"
+          onsubmit="return confirm('Cancel this booking?');">
+
+        <button type="submit"
+                class="cancel-booking-btn">
+            Cancel Booking
+        </button>
+
+    </form>
+
+{% endif %}
+                   <div class="vendor-contact-buttons">
+
+    {% if booking.vendor_account_id %}
+
+        <a href="{{ url_for(
+                    'vendor_public_profile',
+                    vendor_id=booking.vendor_account_id
+                ) }}"
+           class="call-btn">
+            👤 View Vendor
+        </a>
+
+    {% endif %}
+
+
+    {% if booking.vendor_service_id %}
+
+        <a href="{{ url_for(
+                    'chat',
+                    vendor_id=booking.vendor_service_id
+                ) }}"
+           class="message-btn">
+            💬 Message
+        </a>
+
+    {% endif %}
+    {% if booking.can_review %}
+
+    {% if booking.review_id %}
+    <div class="customer-review-display">
+
+    <p>
+        <strong>Your Rating:</strong>
+        {{ booking.review_rating }} ⭐
+    </p>
+
+    <p>
+        <strong>Your Review:</strong>
+        {{ booking.review_text }}
+    </p>
+
+</div>
+
+        <a href="{{ url_for(
+                    'customer_review',
+                    booking_id=booking.id
+                ) }}"
+           class="profile-edit-btn">
+            ✏️ Edit Review
+        </a>
+
+    {% else %}
+
+        <a href="{{ url_for(
+                    'customer_review',
+                    booking_id=booking.id
+                ) }}"
+           class="profile-edit-btn">
+            ⭐ Write Review
+        </a>
+
+    {% endif %}
+
+{% endif %}
+
+
+</div> 
+
+                </div>
+
+            </div>
+
+                {% endfor %}
+
+        <div class="customer-bookings-total">
+            <h3>Grand Total</h3>
+
+            <h2>
+                ₹{{ "%.2f"|format(grand_total) }}
+            </h2>
+
+            <p>
+                Includes Pending and Accepted bookings
+            </p>
+        </div>
+
+    {% else %}
+
+        <p>No bookings yet.</p>
+
+    {% endif %}
+
+</div>
+
+        <br>
+
+        <a href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+        <br><br>
+
+        <a href="{{ url_for('logout') }}"
+           class="vendor-logout-btn">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+<script>
+window.addEventListener("pageshow", function(event) {
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (
+        event.persisted ||
+        (navigation && navigation.type === "back_forward")
+    ) {
+        window.location.reload();
+    }
+});
+</script>
+
+</body>
+
+</html>

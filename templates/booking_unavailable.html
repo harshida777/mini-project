@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Unavailable - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box booking-unavailable-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>Booking Unavailable</h2>
+
+        <div class="unavailable-message">
+            This vendor is currently unavailable for booking.
+        </div>
+
+        <p>
+            <strong>{{ vendor_name }}</strong> is currently not accepting bookings.
+        </p>
+
+        <br>
+
+        <a href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

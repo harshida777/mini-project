@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manage {{ service.service_name }} Package - EventSphere</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head><body>
+<main class="es-flow"><div class="es-shell">
+<a href="{{ url_for('vendor_category_services', category_name=service.service_name) }}" class="es-back">← Back to {{ service.service_name }} Services</a>
+<header><span class="es-kicker">VENDOR • PACKAGE MANAGEMENT</span><h1>{{ service.service_title or service.service_name ~ ' Package' }}</h1>
+<p>Give customers all the details they need to compare and choose your {{ service.service_name|lower }} package.</p></header>
+{% with msgs = get_flashed_messages(with_categories=true) %}{% for typ,msg in msgs %}<div class="es-alert">{{msg}}</div>{% endfor %}{% endwith %}
+{% if error %}<div class="es-error">{{error}}</div>{% endif %}
+<div class="es-summary"><div><b>Base price</b><p>₹{{ service.price_from if service.price_from is not none else 'Contact vendor' }}</p></div><div><b>Availability</b><p>{{ service.availability_status }}</p></div><div><b>Photos & videos</b><p><a href="{{ url_for('vendor_service_media',service_id=service.id) }}">Manage gallery →</a></p></div></div>
+<form method="post" class="es-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="es-form-grid"><label>Theme / Style<input name="theme_style" maxlength="150" placeholder="e.g. Traditional floral, candid wedding" value="{{details.theme_style or ''}}"></label>
+<label>Coverage / Work Hours<input name="duration_hours" type="number" min="0" max="999" step="0.25" placeholder="e.g. 6" value="{{ details.duration_hours if details.duration_hours is not none else '' }}"></label>
+<label>Team Size<input name="team_size" type="number" min="1" max="500" placeholder="e.g. 3" value="{{ details.team_size if details.team_size is not none else '' }}"></label></div>
+<label>What's Included?<textarea name="inclusions" rows="4" maxlength="10000" placeholder="Decoration: stage backdrop, entrance arch...&#10;Photography: camera coverage, second shooter...&#10;Makeup: bridal makeup, hair styling...">{{details.inclusions or ''}}</textarea></label>
+<label>Deliverables<textarea name="deliverables" rows="3" maxlength="10000" placeholder="Photos, edited video, completed setup, etc.">{{details.deliverables or ''}}</textarea></label>
+<label>Special Notes / Terms<textarea name="special_notes" rows="3" maxlength="10000" placeholder="Advance payment, travel charges, other terms">{{details.special_notes or ''}}</textarea></label>
+<button class="es-button" type="submit">Save Package Details</button>
+</form><p class="es-note">Package name, base price, availability and main description are edited from <a href="{{ url_for('vendor_edit_service',service_id=service.id) }}">Edit Service</a>.</p>
+</div></main></body></html>

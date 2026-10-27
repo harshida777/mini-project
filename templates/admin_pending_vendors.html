@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Pending Vendors - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box admin-vendor-box">
+
+        <h1>EventSphere</h1>
+        <h2>Pending Vendors</h2>
+
+        {% if vendors %}
+
+        <table class="admin-vendor-table">
+
+    <thead>
+        <tr>
+            <th>Business Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for vendor in vendors %}
+
+        <tr>
+            <td>{{ vendor.business_name }}</td>
+            <td>{{ vendor.email }}</td>
+            <td>{{ vendor.phone }}</td>
+
+            <td>
+                <span class="pending-status">
+                    {{ vendor.approval_status }}
+                </span>
+            </td>
+
+            <td>
+                <div class="admin-action-buttons">
+
+                    <form method="POST"
+                          action="{{ url_for('admin_approve_vendor', vendor_id=vendor.id) }}">
+
+                        <button type="submit"
+                                class="approve-btn">
+                            Approve
+                        </button>
+
+                    </form>
+
+                    <form method="POST"
+                          action="{{ url_for('admin_reject_vendor', vendor_id=vendor.id) }}">
+
+                        <button type="submit"
+                                class="reject-btn">
+                            Reject
+                        </button>
+
+                    </form>
+
+                </div>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+        {% else %}
+
+            <p>No pending vendor registrations.</p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('admin_dashboard') }}">
+            ← Back to Admin Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

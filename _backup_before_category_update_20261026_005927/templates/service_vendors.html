@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ service_name }} Vendors - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="vendors-page">
+
+        <h1>EventSphere</h1>
+
+        <h2>{{ service_name }} Vendors</h2>
+
+        <p>Compare vendors and choose the best service for your event.</p>
+
+        {% if session.get('vendor_id') %}
+
+            <a href="{{ url_for('vendor_add_service',
+                        category=service_name) }}"
+            class="vendor-logout-btn">
+                + Add {{ service_name }} Service
+            </a>
+
+            <br><br>
+
+        {% endif %}
+
+        <div class="vendor-list">
+
+            {% for vendor in vendors %}
+
+                <div class="vendor-list-card">
+
+                    <h3>{{ vendor.vendor_name }}</h3>
+                    {% if vendor.service_title %}
+                    <h4 class="vendor-service-title">
+                        {{ vendor.service_title }}
+                    </h4>
+                {% endif %}
+
+                {% if vendor.service_description %}
+                    <p class="vendor-service-description">
+                        {{ vendor.service_description }}
+                    </p>
+                {% endif %}
+                {% if vendor.media %}
+
+    <div class="vendor-card-media">
+
+        {% for item in vendor.media[:3] %}
+
+            {% if item.media_type == 'image' %}
+
+                <img src="{{ url_for(
+                            'static',
+                            filename='uploads/service_media/' + item.file_name
+                        ) }}"
+                     alt="{{ vendor.service_title }}">
+
+            {% elif item.media_type == 'video' %}
+
+                <video controls>
+                    <source src="{{ url_for(
+                                    'static',
+                                    filename='uploads/service_media/' + item.file_name
+                                ) }}">
+                </video>
+
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
+
+                    <p>
+                    ⭐ {{ vendor.review_rating }}
+
+                    {% if vendor.review_count > 0 %}
+                        ({{ vendor.review_count }} Reviews)
+                    {% endif %}
+                </p>
+
+                    <p>
+                        Price: ₹{{ vendor.price_from }}
+                        - ₹{{ vendor.price_to }}
+                    </p>
+
+                    <p>📞 {{ vendor.phone }}</p>
+
+                    <p>
+                        Availability:
+                        {{ vendor.availability_status }}
+                    </p>
+
+                    {% if vendor.offer_text %}
+                        <p>
+                            <strong>{{ vendor.offer_text }}</strong>
+                        </p>
+                    {% endif %}
+
+                    <div class="vendor-contact-buttons">
+                        {% if vendor.vendor_account_id %}
+        <a href="{{ url_for('vendor_public_profile',
+                    vendor_id=vendor.vendor_account_id) }}"
+        class="call-btn">
+            👤 View Profile
+        </a>
+    {% endif %}
+
+    <a href="tel:+91{{ vendor.phone }}" class="call-btn">
+        📞 Call
+    </a>
+
+
+    <a href="{{ url_for('chat', vendor_id=vendor.id) }}"
+   class="message-btn">
+    💬 Message
+</a>
+
+</div>
+
+{% if vendor.availability_status == 'Available' %}
+
+    <a href="{{ url_for(
+    'book',
+    service=vendor.service_name,
+    vendor=vendor.vendor_name,
+    service_id=vendor.id
+) }}"
+   class="book-btn">
+    Book Now
+</a>
+
+{% else %}
+
+    <button class="book-btn disabled-book-btn" disabled>
+        Booking Unavailable
+    </button>
+
+{% endif %}
+
+</div>
+            {% else %}
+
+                <p>No vendors available for this service yet.</p>
+
+            {% endfor %}
+
+        </div>
+
+        <br>
+
+        <a href="{{ url_for('home') }}">← Back to Home</a>
+
+    </div>
+
+</body>
+</html>

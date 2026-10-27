@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>All Customers - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-bookings-box admin-all-customers-box">
+
+        <h1>EventSphere</h1>
+        <h2>All Customers</h2>
+
+        {% if customers %}
+
+        <table class="booking-table admin-all-customers-table">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Joined On</th>
+                    <th>Status</th>
+                    <th>Bookings</th>
+                    <th>Reviews</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for customer in customers %}
+
+                <tr>
+
+                    <td>
+                        {{ customer.full_name }}
+                    </td>
+
+                    <td>
+                        {{ customer.email }}
+                    </td>
+
+                    <td>
+                        {{ customer.phone }}
+                    </td>
+
+                    <td>
+                        {{ customer.address or '-' }}
+                    </td>
+
+                    <td>
+                        {% if customer.created_at %}
+                            {{ customer.created_at.strftime('%d-%m-%Y') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ customer.approval_status }}
+                    </td>
+
+                    <td>
+                        {{ customer.total_bookings }}
+                    </td>
+
+                    <td>
+                        {{ customer.reviews_count }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h3>No Customers Found</h3>
+            <p>No customer accounts are available.</p>
+        </div>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('admin_dashboard') }}">
+            ← Back to Admin Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>All Vendors - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-bookings-box admin-all-vendors-box">
+
+        <h1>EventSphere</h1>
+        <h2>All Vendors</h2>
+
+        {% if vendors %}
+
+        <table class="booking-table admin-all-vendors-table">
+
+            <thead>
+                <tr>
+                    <th>Business Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Joined On</th>
+                    <th>Status</th>
+                    <th>Licence / Certificate</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for vendor in vendors %}
+
+                <tr>
+
+                    <td>
+                        {{ vendor.business_name }}
+                    </td>
+
+                    <td>
+                        {{ vendor.email }}
+                    </td>
+
+                    <td>
+                        {{ vendor.phone }}
+                    </td>
+
+                    <td>
+                        {{ vendor.business_address or '-' }}
+                    </td>
+
+                    <td>
+                        {% if vendor.created_at %}
+                            {{ vendor.created_at.strftime('%d-%m-%Y') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ vendor.approval_status }}
+                    </td>
+
+                    <td>
+                        {% if vendor.certificate_file %}
+
+                            <a href="{{ url_for(
+                                'static',
+                                filename='uploads/vendor_certificates/' ~ vendor.certificate_file
+                            ) }}">
+                                View Licence
+                            </a>
+
+                        {% else %}
+
+                            No File
+
+                        {% endif %}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h3>No Vendors Found</h3>
+            <p>No vendor accounts are available.</p>
+        </div>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('admin_dashboard') }}">
+            ← Back to Admin Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

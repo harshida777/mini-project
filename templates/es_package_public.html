@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{service.service_title or service.service_name}} - EventSphere</title><link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}"></head><body>
+<main class="es-flow"><div class="es-shell"><a href="{{url_for('vendor_public_profile',vendor_id=service.vendor_account_id)}}" class="es-back">← Back to {{service.business_name}}</a>
+<header><span class="es-kicker">{{service.service_name|upper}} PACKAGE</span><h1>{{service.service_title or service.service_name ~ ' Service'}}</h1><p>By {{service.business_name}} · {{service.business_address or 'Location available on request'}}</p></header>
+<div class="es-summary"><div><b>Starting price</b><p>₹{{service.price_from if service.price_from is not none else 'Enquire'}}</p></div><div><b>Maximum listed price</b><p>₹{{service.price_to if service.price_to is not none else 'Enquire'}}</p></div><div><b>Availability</b><p>{{service.availability_status}}</p></div></div>
+{% if media %}<section class="es-gallery">{% for photo in media %}{% if photo.media_type == 'image' %}<img loading="lazy" alt="{{service.service_name}} service image" src="{{url_for('static',filename='uploads/service_media/' ~ photo.file_name)}}">{% endif %}{% endfor %}</section>{% endif %}
+<div class="es-details"><h2>Package information</h2>{% if service.service_description %}<p>{{service.service_description}}</p>{% endif %}
+{% if service.theme_style %}<p><b>Style:</b> {{service.theme_style}}</p>{% endif %}
+{% if service.duration_hours is not none %}<p><b>Coverage/work time:</b> {{service.duration_hours}} hours</p>{% endif %}
+{% if service.team_size %}<p><b>Team:</b> {{service.team_size}} members</p>{% endif %}
+{% if service.inclusions %}<h3>Included</h3><p class="es-lines">{{service.inclusions}}</p>{% endif %}
+{% if service.deliverables %}<h3>Deliverables</h3><p class="es-lines">{{service.deliverables}}</p>{% endif %}
+{% if service.special_notes %}<h3>Notes</h3><p class="es-lines">{{service.special_notes}}</p>{% endif %}
+<div class="es-actions"><a class="es-button es-outline" href="tel:{{service.shop_phone}}">Call Vendor</a>
+{% if service.availability_status == 'Available' %}<a class="es-button" href="{{url_for('book',service=service.service_name,vendor=service.vendor_name,service_id=service.id)}}">Book This Package</a>{% else %}<span class="es-muted">Currently unavailable for booking</span>{% endif %}</div>
+</div></div></main></body></html>

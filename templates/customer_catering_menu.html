@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ service.service_title }} - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>{{ service.service_title }}</h2>
+
+        <p class="catering-vendor-name">
+            {{ service.vendor_name }}
+        </p>
+
+        {% if service.service_description %}
+            <p class="catering-description">
+                {{ service.service_description }}
+            </p>
+        {% endif %}
+
+
+        <div class="customer-menu-section">
+
+            <h2>Select Your Food</h2>
+
+            {% if menu_items %}
+
+                <div class="customer-food-grid">
+
+                    {% for item in menu_items %}
+
+                        <div class="customer-food-card"
+                             data-item-id="{{ item.id }}"
+                             data-price="{{ item.price_per_person }}">
+
+                            <div class="food-info">
+
+                                <h3>{{ item.item_name }}</h3>
+
+                                {% if item.item_category %}
+                                    <span class="food-category">
+                                        {{ item.item_category }}
+                                    </span>
+                                {% endif %}
+
+                                <p>
+                                    ₹{{ item.price_per_person }}
+                                    / person
+                                </p>
+
+                            </div>
+
+                            <button type="button"
+                                    class="food-add-btn">
+                                + Add
+                            </button>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p>
+                    No food items available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="selected-menu-box">
+
+            <h2>Your Selected Menu</h2>
+
+            <div id="selectedFoodList">
+
+                <p id="emptyMenuMessage">
+                    No food items selected.
+                </p>
+
+            </div>
+
+
+            <div class="guest-section">
+
+                <label for="guestCount">
+                    Number of Guests
+                </label>
+
+                <input type="number"
+                       id="guestCount"
+                       min="1"
+                       value="1">
+
+            </div>
+
+
+            <div class="menu-total-summary">
+
+                <p>
+                    Price Per Person:
+                    <strong>
+                        ₹<span id="pricePerPerson">0.00</span>
+                    </strong>
+                </p>
+
+                <p>
+                    Number of Guests:
+                    <strong>
+                        <span id="guestDisplay">1</span>
+                    </strong>
+                </p>
+
+                <hr>
+
+                <h2>
+                    Estimated Total:
+                    ₹<span id="grandTotal">0.00</span>
+                </h2>
+
+            </div>
+            <div class="catering-booking-section">
+
+    <label for="bookingDate">
+        Event Date
+    </label>
+
+    <input type="date"
+           id="bookingDate"
+           required>
+
+    <button type="button"
+            id="bookSelectedMenuBtn"
+            class="vendor-logout-btn">
+        Book Selected Menu
+    </button>
+
+</div>
+
+        </div>
+
+
+        <br>
+
+        <a href="javascript:history.back()">
+            ← Back
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const selectedItems = {};
+
+const foodCards =
+    document.querySelectorAll('.customer-food-card');
+
+const selectedFoodList =
+    document.getElementById('selectedFoodList');
+
+const emptyMenuMessage =
+    document.getElementById('emptyMenuMessage');
+
+const guestCount =
+    document.getElementById('guestCount');
+
+const pricePerPerson =
+    document.getElementById('pricePerPerson');
+
+const guestDisplay =
+    document.getElementById('guestDisplay');
+
+const grandTotal =
+    document.getElementById('grandTotal');
+
+
+foodCards.forEach(function(card) {
+
+    const button =
+        card.querySelector('.food-add-btn');
+
+    const itemId =
+        card.dataset.itemId;
+
+    const itemName =
+        card.querySelector('h3').textContent.trim();
+
+    const price =
+        parseFloat(card.dataset.price);
+
+
+    button.addEventListener('click', function() {
+
+        if (selectedItems[itemId]) {
+
+            delete selectedItems[itemId];
+
+            button.textContent = '+ Add';
+
+            button.classList.remove('food-added-btn');
+
+        } else {
+
+            selectedItems[itemId] = {
+                id: itemId,
+                name: itemName,
+                price: price
+            };
+
+            button.textContent = '✓ Added';
+
+            button.classList.add('food-added-btn');
+        }
+
+        updateSelectedMenu();
+    });
+
+});
+
+
+guestCount.addEventListener('input', function() {
+
+    if (parseInt(guestCount.value) < 1) {
+        guestCount.value = 1;
+    }
+
+    updateSelectedMenu();
+});
+
+
+function removeFood(itemId) {
+
+    delete selectedItems[itemId];
+
+    const card = document.querySelector(
+        '.customer-food-card[data-item-id="' +
+        itemId +
+        '"]'
+    );
+
+    if (card) {
+
+        const button =
+            card.querySelector('.food-add-btn');
+
+        button.textContent = '+ Add';
+
+        button.classList.remove('food-added-btn');
+    }
+
+    updateSelectedMenu();
+}
+
+
+function updateSelectedMenu() {
+
+    selectedFoodList.innerHTML = '';
+
+    const items =
+        Object.values(selectedItems);
+
+    let perPersonTotal = 0;
+
+
+    if (items.length === 0) {
+
+        selectedFoodList.innerHTML =
+            '<p id="emptyMenuMessage">' +
+            'No food items selected.' +
+            '</p>';
+
+    } else {
+
+        items.forEach(function(item) {
+
+            perPersonTotal += item.price;
+
+            const row =
+                document.createElement('div');
+
+            row.className =
+                'selected-food-row';
+
+            row.innerHTML = `
+
+                <div>
+                    <strong>${item.name}</strong>
+                    <span>
+                        ₹${item.price.toFixed(2)}
+                        / person
+                    </span>
+                </div>
+
+                <button type="button"
+                        onclick="removeFood('${item.id}')">
+                    Remove
+                </button>
+            `;
+
+            selectedFoodList.appendChild(row);
+        });
+    }
+
+
+    let guests =
+        parseInt(guestCount.value) || 1;
+
+    const total =
+        perPersonTotal * guests;
+
+
+    pricePerPerson.textContent =
+        perPersonTotal.toFixed(2);
+
+    guestDisplay.textContent =
+        guests;
+
+    grandTotal.textContent =
+        total.toFixed(2);
+}
+
+const bookButton =
+    document.getElementById('bookSelectedMenuBtn');
+
+bookButton.addEventListener('click', function () {
+
+    const items = Object.values(selectedItems);
+    const bookingDate =
+        document.getElementById('bookingDate').value;
+
+    const guests =
+        parseInt(document.getElementById('guestCount').value) || 0;
+
+    if (items.length === 0) {
+        alert('Please select at least one food item.');
+        return;
+    }
+
+    if (guests < 1) {
+        alert('Please enter number of guests.');
+        return;
+    }
+
+    if (!bookingDate) {
+        alert('Please select event date.');
+        return;
+    }
+
+    const form = document.createElement('form');
+
+    form.method = 'POST';
+
+    form.action =
+        "{{ url_for('book_catering_menu', service_id=service.id) }}";
+
+
+    const itemInput = document.createElement('input');
+    itemInput.type = 'hidden';
+    itemInput.name = 'selected_item_ids';
+    itemInput.value =
+        items.map(item => item.id).join(',');
+
+    form.appendChild(itemInput);
+
+
+    const guestInputHidden = document.createElement('input');
+    guestInputHidden.type = 'hidden';
+    guestInputHidden.name = 'guest_count';
+    guestInputHidden.value = guests;
+
+    form.appendChild(guestInputHidden);
+
+
+    const dateInputHidden = document.createElement('input');
+    dateInputHidden.type = 'hidden';
+    dateInputHidden.name = 'booking_date';
+    dateInputHidden.value = bookingDate;
+
+    form.appendChild(dateInputHidden);
+
+
+    document.body.appendChild(form);
+
+    form.submit();
+});
+</script>
+
+</body>
+</html>

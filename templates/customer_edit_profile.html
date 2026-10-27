@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Profile - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box">
+
+        <h1>EventSphere</h1>
+        <h2>Edit Profile</h2>
+
+        {% if error %}
+            <div class="unavailable-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="add-service-form">
+
+            <label>Profile Photo</label>
+
+            <input type="file"
+                   name="profile_image"
+                   accept=".jpg,.jpeg,.png,.webp">
+
+
+            <label>Full Name</label>
+
+            <input type="text"
+                   name="full_name"
+                   value="{{ user.full_name }}"
+                   required>
+
+
+            <label>Email</label>
+
+            <input type="email"
+                   value="{{ user.email }}"
+                   readonly>
+
+
+            <label>Phone</label>
+
+            <div class="phone-input-group">
+
+                <span>+91</span>
+
+                <input type="text"
+                       name="phone"
+                       value="{{ user.phone_digits }}"
+                       maxlength="10"
+                       minlength="10"
+                       pattern="[0-9]{10}"
+                       inputmode="numeric"
+                       placeholder="10 digit number"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                       required>
+
+            </div>
+
+
+            <label>Address</label>
+
+            <textarea name="address"
+                      rows="4"
+                      placeholder="Enter your address">{{ user.address or '' }}</textarea>
+
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="{{ url_for('customer_profile') }}">
+            ← Back to Profile
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

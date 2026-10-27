@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Pending Customers - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+                           filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-bookings-box admin-customers-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>Pending Customers</h2>
+
+        {% if customers %}
+
+            <table class="booking-table admin-customer-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for customer in customers %}
+
+                    <tr>
+
+                        <td>
+                            {{ customer.full_name }}
+                        </td>
+
+                        <td>
+                            {{ customer.email }}
+                        </td>
+
+                        <td>
+                            {{ customer.phone }}
+                        </td>
+
+                        <td>
+                            {{ customer.approval_status }}
+                        </td>
+
+                        <td>
+
+                            <form method="POST"
+                                  action="{{ url_for(
+                                      'admin_approve_customer',
+                                      customer_id=customer.id
+                                  ) }}"
+                                  style="display:inline;">
+
+                                <button type="submit"
+                                        class="vendor-logout-btn">
+
+                                    Approve
+
+                                </button>
+
+                            </form>
+
+
+                            <form method="POST"
+                                  action="{{ url_for(
+                                      'admin_reject_customer',
+                                      customer_id=customer.id
+                                  ) }}"
+                                  style="display:inline;">
+
+                                <button type="submit"
+                                        class="vendor-logout-btn">
+
+                                    Reject
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+    <div class="empty-state">
+        <h3>No Pending Customers</h3>
+        <p>All customer registrations are reviewed.</p>
+    </div>
+
+{% endif %}
+
+        <br>
+
+        <a href="{{ url_for('admin_dashboard') }}">
+            ← Back to Admin Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

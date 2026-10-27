@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Add Service - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box">
+
+        <h1>EventSphere</h1>
+        <h2>Add New Service</h2>
+
+        {% if error %}
+            <div class="unavailable-message">
+                {{ error }}
+            </div>
+            {% endif %}
+            <form method="POST" class="add-service-form">
+
+       {% set selected_category = request.args.get('category', '') %}
+
+<label for="category">Category</label>
+
+<select
+    id="category"
+    name="category"
+    required
+    onchange="window.location.href =
+        window.location.pathname + '?category=' +
+        encodeURIComponent(this.value)"
+>
+    <option value="">Select Category</option>
+
+    {% set categories = [
+        'Venue',
+        'Catering',
+        'Decoration',
+        'Photography & Videography',
+        'Makeup Artist',
+        'Costume Rental',
+        'Ornament Rental',
+        'Transportation'
+    ] %}
+
+    {% for category in categories %}
+
+    <option
+        value="{{ category }}"
+        {% if selected_category == category %}
+            selected
+        {% endif %}
+    >
+        {{ category }}
+    </option>
+
+    {% endfor %}
+</select>
+
+<input
+    type="hidden"
+    name="service_name"
+    value="{{ selected_category }}"
+>
+
+    <label>Service Title</label>
+    <input type="text"
+        name="service_title"
+        placeholder="Example: Wedding Catering"
+        required>
+
+    <label>Service Description</label>
+    <textarea name="service_description"
+            rows="4"
+            placeholder="Describe your service..."
+            required></textarea>
+
+    <label>Phone</label>
+
+    <div class="phone-input-group">
+        <span>+91</span>
+
+        <input type="text"
+            name="phone"
+            maxlength="10"
+            minlength="10"
+            pattern="[0-9]{10}"
+            inputmode="numeric"
+            placeholder="10 digit number"
+            oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+            required>
+    </div>
+
+    <label>Price From</label>
+    <input type="number"
+        name="price_from"
+        min="0"
+        step="0.01"
+        required>
+
+    <label>Price To</label>
+    <input type="number"
+        name="price_to"
+        min="0"
+        step="0.01"
+        required>
+
+    <label>Availability</label>
+    <select name="availability_status" required>
+        <option value="Available">Available</option>
+        <option value="Unavailable">Unavailable</option>
+    </select>
+
+    <label>Offer</label>
+    <input type="text"
+        name="offer_text"
+        placeholder="Optional">
+
+    {% if selected_category == 'Catering' %}
+
+    <div class="catering-menu-fields">
+
+        <label>Food Type</label>
+        <select name="food_type">
+            <option value="">Select Food Type</option>
+            <option value="Veg">Veg</option>
+            <option value="Non-Veg">Non-Veg</option>
+            <option value="Both">Both</option>
+        </select>
+
+        <label>Price Per Plate</label>
+        <input type="number"
+               name="price_per_plate"
+               min="0"
+               step="0.01"
+               placeholder="Example: 650">
+
+        <label>Minimum Guests</label>
+        <input type="number"
+               name="minimum_guests"
+               min="1"
+               placeholder="Example: 100">
+
+        <label>Menu / Package Details</label>
+        <textarea name="menu_details"
+                  rows="6"
+                  placeholder="Example:
+                 Welcome Drink
+                Chicken Biriyani
+                Beef Curry
+                Salad
+                Dessert"></textarea>
+
+    </div>
+
+{% endif %}
+{% if selected_category == 'Venue' %}
+
+<div class="venue-fields">
+
+    <label>Venue Type</label>
+    <select name="venue_type">
+        <option value="">Select Venue Type</option>
+        <option value="Wedding Hall">Wedding Hall</option>
+        <option value="Convention Center">Convention Center</option>
+        <option value="Auditorium">Auditorium</option>
+        <option value="Outdoor Venue">Outdoor Venue</option>
+        <option value="Resort">Resort</option>
+        <option value="Banquet Hall">Banquet Hall</option>
+    </select>
+
+    <label>Guest Capacity</label>
+    <input
+        type="number"
+        name="venue_capacity"
+        min="1"
+        placeholder="Example: 500">
+
+    <label>Venue Location</label>
+    <input
+        type="text"
+        name="venue_location"
+        placeholder="Example: Calicut, Kerala">
+
+    <label>Facilities</label>
+    <textarea
+        name="venue_facilities"
+        rows="4"
+        placeholder="Example:
+Parking
+AC Hall
+Dining Area
+Stage
+Changing Room"></textarea>
+
+    <label>Parking Available</label>
+    <select name="parking_available">
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select>
+
+</div>
+
+{% endif %}
+{% if selected_category == 'Transportation' %}
+
+<div class="transportation-fields">
+
+    <label>Vehicle Type</label>
+    <select name="vehicle_type">
+        <option value="">Select Vehicle Type</option>
+        <option value="Car">Car</option>
+        <option value="SUV">SUV</option>
+        <option value="Van">Van</option>
+        <option value="Mini Bus">Mini Bus</option>
+        <option value="Bus">Bus</option>
+        <option value="Luxury Car">Luxury Car</option>
+    </select>
+
+    <label>Vehicle Name / Model</label>
+    <input
+        type="text"
+        name="vehicle_name"
+        placeholder="Example: Toyota Innova">
+
+    <label>Hourly Rate</label>
+    <input
+        type="number"
+        name="hourly_rate"
+        min="0"
+        step="0.01"
+        placeholder="Example: 1200">
+
+    <label>Seating Capacity</label>
+    <input
+        type="number"
+        name="seating_capacity"
+        min="1"
+        placeholder="Example: 7">
+
+    <label>Vehicle Details</label>
+    <textarea
+        name="vehicle_details"
+        rows="4"
+        placeholder="Example:
+AC Vehicle
+With Driver
+Luxury Interior
+Luggage Space"></textarea>
+
+</div>
+
+{% endif %}
+
+    <button type="submit">
+        Add Service
+    </button>
+
+</form> 
+
+        <br>
+
+        <a href="{{ url_for('vendor_services') }}">
+            ← Back to Manage Services
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

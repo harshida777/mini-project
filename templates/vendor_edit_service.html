@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Service - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box">
+
+        <h1>EventSphere</h1>
+        <h2>Edit Service</h2>
+
+        <form method="POST">
+
+            <div class="form-group">
+                <label>Service Name</label>
+
+                <input type="text"
+                       value="{{ service.service_name }}"
+                       readonly>
+            </div>
+
+
+            <div class="form-group">
+                <label>Phone Number</label>
+
+                <input type="text"
+                       name="phone"
+                       value="{{ service.phone }}"
+                       required>
+            </div>
+
+
+            <div class="form-group">
+                <label>Price From</label>
+
+                <input type="number"
+                       name="price_from"
+                       value="{{ service.price_from }}"
+                       step="0.01"
+                       min="0"
+                       required>
+            </div>
+
+
+            <div class="form-group">
+                <label>Price To</label>
+
+                <input type="number"
+                       name="price_to"
+                       value="{{ service.price_to }}"
+                       step="0.01"
+                       min="0"
+                       required>
+            </div>
+
+
+            <div class="form-group">
+                <label>Availability</label>
+
+                <select name="availability_status" required>
+
+                    <option value="Available"
+                        {% if service.availability_status == 'Available' %}
+                        selected
+                        {% endif %}>
+                        Available
+                    </option>
+
+                    <option value="Unavailable"
+                        {% if service.availability_status == 'Unavailable' %}
+                        selected
+                        {% endif %}>
+                        Unavailable
+                    </option>
+
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>Offer</label>
+
+                <input type="text"
+                       name="offer_text"
+                       value="{{ service.offer_text or '' }}"
+                       placeholder="Enter offer details">
+            </div>
+
+        {% if service.service_name == 'Catering' %}
+
+    <div class="form-group">
+        <label>Food Type</label>
+
+        <select name="food_type">
+
+            <option value="">Select Food Type</option>
+
+            <option value="Veg"
+                {% if service.food_type == 'Veg' %}selected{% endif %}>
+                Veg
+            </option>
+
+            <option value="Non-Veg"
+                {% if service.food_type == 'Non-Veg' %}selected{% endif %}>
+                Non-Veg
+            </option>
+
+            <option value="Both"
+                {% if service.food_type == 'Both' %}selected{% endif %}>
+                Both
+            </option>
+
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label>Price Per Plate</label>
+
+        <input type="number"
+               name="price_per_plate"
+               min="0"
+               step="0.01"
+               value="{{ service.price_per_plate or '' }}"
+               placeholder="Example: 750">
+    </div>
+
+
+    <div class="form-group">
+        <label>Minimum Guests</label>
+
+        <input type="number"
+               name="minimum_guests"
+               min="1"
+               value="{{ service.minimum_guests or '' }}"
+               placeholder="Example: 100">
+    </div>
+
+
+    <div class="form-group">
+        <label>Menu / Package Details</label>
+
+        <textarea name="menu_details"
+                  rows="6"
+                  placeholder="Enter menu details...">{{ service.menu_details or '' }}</textarea>
+    </div>
+
+{% endif %}  
+
+        {% if service.service_name == 'Transportation' %}
+
+        <div class="form-group">
+            <label>Vehicle Type</label>
+            <select name="vehicle_type">
+                <option value="">Select Vehicle Type</option>
+                {% for type in ['Luxury Car', 'Sedan', 'SUV', 'Bus', 'Mini Bus', 'Van', 'Traveller', 'Other'] %}
+                <option value="{{ type }}"
+                    {% if service.vehicle_type == type %}selected{% endif %}>
+                    {{ type }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Name / Model</label>
+            <input type="text"
+                name="vehicle_name"
+                value="{{ service.vehicle_name or '' }}"
+                placeholder="Example: Toyota Innova">
+        </div>
+
+        <div class="form-group">
+            <label>Hourly Rate (₹)</label>
+            <input type="number"
+                name="hourly_rate"
+                min="0"
+                step="0.01"
+                value="{{ service.hourly_rate or '' }}"
+                placeholder="Example: 2000">
+        </div>
+
+        <div class="form-group">
+            <label>Seating Capacity</label>
+            <input type="number"
+                name="seating_capacity"
+                min="1"
+                value="{{ service.seating_capacity or '' }}"
+                placeholder="Example: 7">
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Details</label>
+            <textarea name="vehicle_details"
+                    rows="4"
+                    placeholder="AC, Luxury Seats, Driver Available">{{ service.vehicle_details or '' }}</textarea>
+        </div>
+
+        {% endif %}
+
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="{{ url_for('vendor_services') }}">
+            ← Back to Manage Services
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

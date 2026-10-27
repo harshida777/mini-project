@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Vendor Profile - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-profile-box">
+
+        <h1>EventSphere</h1>
+        <h2>Edit Profile</h2>
+
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            <label>Profile Photo</label>
+
+            <input type="file"
+                   name="profile_image"
+                   accept=".jpg,.jpeg,.png,.webp">
+
+            <label>Business Name</label>
+
+            <input type="text"
+                   name="business_name"
+                   value="{{ vendor.business_name }}"
+                   required>
+
+            <label>Phone Number</label>
+
+            <div class="phone-input-group">
+
+                <span class="phone-prefix">+91</span>
+
+                <input type="text"
+                       name="phone"
+                       value="{{ vendor.phone[-10:] }}"
+                       maxlength="10"
+                       minlength="10"
+                       pattern="[0-9]{10}"
+                       inputmode="numeric"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                       required>
+
+            </div>
+
+            <label>Business Address</label>
+
+            <input type="text"
+                   name="business_address"
+                   value="{{ vendor.business_address or '' }}"
+                   placeholder="Enter business address">
+
+            <label>About Business</label>
+
+            <textarea name="about_business"
+                      rows="5"
+                      placeholder="Tell customers about your business">{{ vendor.about_business or '' }}</textarea>
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="{{ url_for('vendor_profile') }}">
+            ← Back to Profile
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

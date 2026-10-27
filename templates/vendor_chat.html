@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vendor Chat - EventSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-box vendor-chat-box">
+
+        <h1>EventSphere</h1>
+
+        <h2>
+            Chat with {{ customer.full_name }}
+        </h2>
+
+        <p class="chat-email">
+            {{ customer.email }}
+        </p>
+
+
+        <div class="chat-messages">
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="chat-message
+    {% if message.sender_type == 'vendor' %}
+        sent-message
+    {% else %}
+        received-message
+    {% endif %}">
+
+                        <p>
+                            {{ message.message_text }}
+                        </p>
+
+                        <small>
+                            {{ message.sent_at.strftime('%I:%M %p').lstrip('0').lower() }}
+                        </small>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No messages yet.</p>
+
+            {% endif %}
+
+        </div>
+
+
+        <form method="POST" class="vendor-reply-form">
+
+    <textarea
+        name="message_text"
+        placeholder="Type your reply..."
+        required></textarea>
+
+    <button type="submit">
+        Send Reply
+    </button>
+
+</form>
+
+
+        <a href="{{ url_for('vendor_messages') }}">
+            ← Back to Customer Messages
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
